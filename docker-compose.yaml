@@ -1,0 +1,34 @@
+version: "3.8"
+name: goals-app
+services:
+  mongodb:
+    image: "mongo"
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=aziemp66
+    #   - MONGO_INITDB_ROOT_PASSWORD=azie122333
+    env_file:
+      - ./env/mongo.env
+    volumes:
+      - goals-mongo-data:/data/db
+      - goals-mongo-config:/data/configdb
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    volumes:
+      - "goals-backend-logs:/app/logs"
+      - "./backend:/app"
+      - "/app/node_modules"
+    env_file:
+      - ./env/backend.env
+    depends_on:
+      - mongodb
+
+  # frontend:
+
+volumes:
+  goals-mongo-data:
+  goals-mongo-config:
+  goals-backend-logs:
